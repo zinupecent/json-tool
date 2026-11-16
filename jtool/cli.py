@@ -83,7 +83,8 @@ def cmd_keys(args):
     obj = parse(read_text(args.file))
     if not isinstance(obj, dict):
         raise SystemExit("错误：顶层不是对象，没有 keys 可列。")
-    for k in obj:
+    keys = sorted(obj) if args.sort else obj
+    for k in keys:
         print(k)
 
 
@@ -116,6 +117,7 @@ def build_parser():
     g.set_defaults(func=cmd_get)
 
     k = sub.add_parser("keys", help="列出顶层所有 key")
+    k.add_argument("--sort", action="store_true", help="按 key 排序输出")
     k.add_argument("file", nargs="?", help="JSON 文件，不传则从 stdin 读")
     k.set_defaults(func=cmd_keys)
 
