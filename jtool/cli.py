@@ -75,6 +75,9 @@ def cmd_get(args):
     try:
         value = get_path(obj, args.path)
     except KeyError as e:
+        if args.default is not None:
+            print(args.default)
+            return
         raise SystemExit(f"错误：{e}")
     print(fmt_value(value))
 
@@ -112,6 +115,7 @@ def build_parser():
     f.set_defaults(func=cmd_fmt)
 
     g = sub.add_parser("get", help="按点路径取值，如 a.b.0")
+    g.add_argument("--default", default=None, help="找不到路径时输出的默认值")
     g.add_argument("path", help="点路径，如 config.servers.0.host")
     g.add_argument("file", nargs="?", help="JSON 文件，不传则从 stdin 读")
     g.set_defaults(func=cmd_get)
